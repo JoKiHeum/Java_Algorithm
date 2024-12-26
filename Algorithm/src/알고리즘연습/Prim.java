@@ -48,6 +48,7 @@ public class Prim {
 		// 인접리스트 만들기
 		for (int i = 0; i < V+1; i++) {
 			G[i] = new ArrayList<>();
+			dist[i] = INF;
 		}
 		
 		for (int i = 0; i < E; i++) {
@@ -59,14 +60,14 @@ public class Prim {
 			G[v].add(new Edge(v,w,weight));
 			G[w].add(new Edge(w,v,weight));
 		}
-		// 인접리스트 확인용 
-//		for (int i = 0; i < V + 1; i++) {
-//		    System.out.print(i + "번 노드: ");
-//		    for (Edge edge : G[i]) {
-//		        System.out.print("(to: " + edge.W + ", weight: " + edge.weight + ") ");
-//		    }
-//		    System.out.println();
-//		}
+//		 인접리스트 확인용 
+		for (int i = 0; i < V + 1; i++) {
+		    System.out.print(i + "번 노드: ");
+		    for (Edge edge : G[i]) {
+		        System.out.print("(to: " + edge.W + ", weight: " + edge.weight + ") ");
+		    }
+		    System.out.println();
+		}
 		prim(0);
 		int total_dist = 0;
 		for (int i = 0; i < V+1; i++) {
@@ -79,9 +80,8 @@ public class Prim {
 	
 	static void prim(int start) {
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		pq.addAll(G[start]);
+		pq.add(new Edge(0, 0, 0));
 		dist[start] = 0;
-		visited[start] = true;
 		
 		int cnt = V;
 		while (!pq.isEmpty() && cnt != 0) {
@@ -90,12 +90,16 @@ public class Prim {
 			if (visited[e.W]) {
 				continue;
 			}
-			
-			dist[e.W] = e.weight;
 			visited[e.W] = true;
+			for (Edge edge : G[e.W]) {
+				if (!visited[edge.W] && dist[edge.W] > edge.weight) {
+					dist[edge.W] = edge.weight;
+					pq.add(new Edge(edge.V, edge.W, edge.weight));
+				}
+			}
 			cnt--;
 			
-			pq.addAll(G[e.W]);
+
 		}
 	}
 			
